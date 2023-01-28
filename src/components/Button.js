@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
     width: (Dimensions.get("window").width / 4) * 2,
   },
   tripleButton: {
-    width: (Dimensions.get("window").width / 4) * 2,
+    width: (Dimensions.get("window").width / 4) * 3,
   },
 });

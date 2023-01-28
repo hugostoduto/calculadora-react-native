@@ -3,11 +3,30 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Button from "./src/components/Button";
 import Display from "./src/components/Display";
 import React, { useState } from "react";
+const initialState = {
+  displayValue: 0,
+  clearDisplay: false,
+  operation: null,
+  values: [0, 0],
+  current: 0,
+};
 export default function App() {
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayResult, setDisplayResult] = useState({ ...initialState });
 
   const addDigit = (n) => {
-    setDisplayValue(n);
+    if (n === "." && displayResult.displayValue.includes(".")) {
+      return;
+    }
+    const clearDisplay =
+      displayResult.displayValue === 0 || displayResult.clearDisplay;
+    const currentValue = clearDisplay ? "" : displayResult.displayValue;
+    const displayValue = currentValue + "" + n;
+    setDisplayValue({ displayValue, clearDisplay: false });
+    if (n !== ".") {
+      const newValue = parseFloat(displayValue);
+      const values = [...displayResult.values];
+      values[displayResult.current] = newValue;
+    }
   };
   const clearMemory = () => {
     setDisplayValue(0);
@@ -15,7 +34,7 @@ export default function App() {
   const setOperation = (operation) => {};
   return (
     <SafeAreaView style={styles.container}>
-      <Display value={displayValue} />
+      <Display value={displayResult.displayValue} />
       <View style={styles.buttons}>
         <Button operation onClick={clearMemory} triple label="AC" />
         <Button operation onClick={setOperation} label="÷" />
@@ -31,9 +50,9 @@ export default function App() {
         <Button onClick={() => addDigit(2)} label="2" />
         <Button onClick={() => addDigit(3)} label="3" />
         <Button operation onClick={setOperation()} label="+" />
-        <Button onClick={() => addDigit(0)} label="0" />
+        <Button double onClick={() => addDigit(0)} label="0" />
         <Button label="." />
-        <Button triple label="=" />
+        <Button label="=" />
       </View>
     </SafeAreaView>
   );
